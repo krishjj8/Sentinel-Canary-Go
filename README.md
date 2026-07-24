@@ -135,13 +135,13 @@ Because the same Prometheus data backs both the Grafana dashboards and the `Anal
 
 ### 1. Argo Rollouts — Promoted Canary Status
 
-![Argo Rollout Status](docs/argo-rollout-status.png)
+![Argo Rollout Status](docs/argo-rollout-status.png.png)
 
 CLI output of `kubectl argo rollouts get rollout sentinel-app`, showing the rollout fully promoted to `revision:2` (image `v1.0.0-v2`) at 100% weight after the `AnalysisTemplate` passed at each canary step.
 
 ### 2. Grafana — Live Traffic Split
 
-![Grafana Traffic Split](docs/grafana-traffic-split.png)
+![Grafana Traffic Split](docs/grafana-traffic-split.png.png)
 
 Grafana dashboard showing the live PromQL metric curve for `{path="/version", version="1.0.0-v2"}`, confirming that traffic progressively shifted from the stable revision to the canary revision as the rollout advanced.
 
