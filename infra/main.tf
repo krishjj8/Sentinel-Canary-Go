@@ -136,12 +136,17 @@ data "aws_ami" "ubuntu" {
     values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
 }
+resource "aws_key_pair" "sentinel_key" {
+  key_name   = "sentinel-canary-key" 
+  public_key = file("${path.module}/demo.pub")
+}
 
 resource "aws_instance" "k3s_node" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3a.medium"
   subnet_id              = aws_subnet.public_subnet.id
   vpc_security_group_ids = [aws_security_group.sentinel_sg.id]
+  key_name               = aws_key_pair.sentinel_key.key_name
 
   # Add 4GB Swap for memory 
   user_data = <<-EOF

@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: sentinel-app
+  labels:
+    app: sentinel-app
+spec:
+  replicas: 4
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: sentinel-app
+  template:
+    metadata:
+      labels:
+        app: sentinel-app
+    spec:
+      imagePullSecrets:
+        - name: ecr-registry-key
+      containers:
+        - name: sentinel
+          image: 408834627625.dkr.ecr.ap-south-1.amazonaws.com/sentinel-canary:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: APP_VERSION
+              value: "1.0.0-v2"
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
+  strategy:
+    canary:
+      analysis:
+        templates:
+          - templateName: sentinel-health-check
+      steps:
+        - setWeight: 20
+        - pause: { duration: 15s }
+        - setWeight: 50
+        - pause: { duration: 15s }

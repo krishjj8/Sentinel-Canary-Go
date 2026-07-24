@@ -13,3 +13,4 @@ app/sentinel
 .DS_Store
 .idea/
 .vscode/
+.demo.pub

@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: sentinel-health-check
+spec:
+  metrics:
+    - name: health-check
+      interval: 5s
+      failureLimit: 2
+      provider:
+        web:
+          url: "http://sentinel-service.default.svc.cluster.local:8080/health"
+          timeoutSeconds: 3
