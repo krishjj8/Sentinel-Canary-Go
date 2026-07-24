@@ -1,0 +1,15 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Go Binaries
+app/sentinel
+*.exe
+*.out
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
