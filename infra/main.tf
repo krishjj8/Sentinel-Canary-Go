@@ -13,7 +13,7 @@ provider "aws" {
 }
 
 variable "aws_region" {
-  default     = "us-east-1"
+  default     = "ap-south-1"
   description = "AWS region for resources"
 }
 
@@ -143,7 +143,7 @@ resource "aws_instance" "k3s_node" {
   subnet_id              = aws_subnet.public_subnet.id
   vpc_security_group_ids = [aws_security_group.sentinel_sg.id]
 
-  # Add 4GB Swap for memory stability on small nodes
+  # Add 4GB Swap for memory 
   user_data = <<-EOF
     #!/bin/bash
     fallocate -l 4G /swapfile
