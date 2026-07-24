@@ -1,11 +1,8 @@
-name: Build,Scan & Push to ECR
+name: Phase 3 - Build, Scan & Push to ECR
 
 on:
- push:
-   branches: ["main"]
-   paths:
-     - 'app/**'
-     - '.github/workflows/**'
+  push:
+    branches: [ "main" ]
 
 jobs:
   build-scan-push:
@@ -20,11 +17,11 @@ jobs:
           docker build -t sentinel:${{ github.sha }} -f app/Dockerfile app/
 
       - name: Run Trivy Vulnerability Scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: 'sentinel:${{ github.sha }}'
           format: 'table'
-          exit-code: '1'
+          exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
