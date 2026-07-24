@@ -33,11 +33,29 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      
+      - name: Check if ECR Repository Exists
+        id: check-ecr
+        env:
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
+        run: |
+          if aws ecr describe-repositories --repository-names $ECR_REPOSITORY --region ${{ secrets.AWS_REGION }} > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "ECR Repository found. Proceeding with push."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "ECR Repository '$ECR_REPOSITORY' does not exist (Infra Destroyed). Skipping ECR push."
+          fi
+
+      
       - name: Login to Amazon ECR
+        if: steps.check-ecr.outputs.exists == 'true'
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      
       - name: Tag and Push Image to ECR
+        if: steps.check-ecr.outputs.exists == 'true'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
